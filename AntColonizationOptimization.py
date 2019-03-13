@@ -32,12 +32,12 @@ class AntColonyOptimization:
         """
         return self.trail_levels[n1][n2]
 
-    def set_trail_level(self, n1, n2, new_level):
+    def incre_trail_level(self, n1, n2):
         """
-            Given two nodes, set the trail level of the edge between
-            them to new_level.
+            Given two nodes, incremenr the trail level of the edge between
+            them.
         """
-        self.trail_levels[n1][n2] = new_level
+        self.trail_levels[n1][n2] += 1
 
     def gen_next_node(self, probabilities, total):
         """
@@ -69,7 +69,9 @@ class AntColonyOptimization:
         total_probl = sum(numerators)
         probls = [n / total_probl for n in numerators]
         next_node = self.gen_next_node(probls, total_probl)
+        self.incre_trail_level(curr_node, next_node)
         ant.visit_node(next_node)
+
 
     def pheromone_update(self):
         ''' At the end of each iteration, update trails for all paths the ants took.'''
