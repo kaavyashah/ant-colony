@@ -21,7 +21,7 @@ class AntColonyOptimization:
         self.probabilities = []
 
         for ant in self.num_ants:
-            ants.append(Ant(self.num_nodes, self.starting_node))
+            self.ants.append(Ant(self.num_nodes, self.starting_node))
 
         self.trail_levels = [[0 for i in range(self.num_nodes)] for i in range(self.num_nodes)]
 
@@ -58,6 +58,9 @@ class AntColonyOptimization:
         curr_node = ant.last_visited().i
         numerators = []
 
+
+        #don't we need to account for visited nodes?
+
         for n in range(self.num_nodes): #all nodes are neighbors for our purpose
             curr_numer = 0
             if n != curr_node: #guaranteed to not stay at same node
@@ -75,16 +78,49 @@ class AntColonyOptimization:
 
     def pheromone_update(self):
         ''' At the end of each iteration, update trails for all paths the ants took.'''
-        return None
+        return None 
 
     def run_aco(self):
         '''
-            Runs entire ACO algorithm.
+            Runs entire ACO algorithm. 
+
+            ISSUE: Not taking into account the weight of final point back to starting point to complete tour
         '''
-        return None
+        for i in range(10): #arbitrary stopping point
+            for ant in self.ants:
+                while not len(ant.visited) == num_nodes: #while the tour is not complete/the ant has not visited all nodes
+                    select_edge(ant) #move the current ant further along
+
+            pheromone_update() #perform the pheromone_update
+
+            #reset the ants for the new iteration
+            self.ants = [] 
+
+            for ant in self.num_ants:
+                ants.append(Ant(self.num_nodes, self.starting_node))
+
 
     def best_tour(self):
         '''
             After ACO is run, finds the most optimal tour out of all the ants.
         '''
-        return None
+        best_path = []
+
+        copy_trail_levels = [x[:] for x in self.trail_levels] #prevent mutation of original trail_levels list
+
+        current_node = self.starting_node
+
+        while len(best_path) < self.num_nodes: #while the tour is not complete
+            best_path.append(current_node) #update the best path
+
+            next_node = max(copy_trail_levels[current_node]) #find the next trail with the highest level
+
+            #prevents repeat nodes in best path
+            #COMMENT: probably not necessary if ACO is implemented correctly
+            if next_node in best_path:
+                copy_trail_levels[current_node][next_node] = 0 
+                continue
+
+            current_node = next_node
+
+        return best_path
