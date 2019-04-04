@@ -20,4 +20,4 @@ class Graph:
         '''
             Returns the edge distance between two nodes.
         '''
-        return edges[n1][n2]
+        return self.edges[n1][n2]
