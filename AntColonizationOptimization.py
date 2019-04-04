@@ -78,11 +78,20 @@ class AntColonyOptimization:
 
     def pheromone_update(self):
         ''' At the end of each iteration, update trails for all paths the ants took.'''
-        return None 
+        for trail in len(self.trails):
+            curr_prob = self.probabilities[i]
+            level = self.trail_level[i]
+            total_pheremone = 0
+            for ant in self.ants:
+                if ant.has_visited(trail):
+                    kth_val = self.Q / ant.trail_length(self.graph.edges)
+                    total_pheremone += kth_val
+            self.trail_level[i] = (1 - curr_prob)*self.trail_level[i] +  total_pheremone
+        return None
 
     def run_aco(self):
         '''
-            Runs entire ACO algorithm. 
+            Runs entire ACO algorithm.
 
             ISSUE: Not taking into account the weight of final point back to starting point to complete tour
         '''
@@ -94,7 +103,7 @@ class AntColonyOptimization:
             pheromone_update() #perform the pheromone_update
 
             #reset the ants for the new iteration
-            self.ants = [] 
+            self.ants = []
 
             for ant in self.num_ants:
                 ants.append(Ant(self.num_nodes, self.starting_node))
@@ -118,7 +127,7 @@ class AntColonyOptimization:
             #prevents repeat nodes in best path
             #COMMENT: probably not necessary if ACO is implemented correctly
             if next_node in best_path:
-                copy_trail_levels[current_node][next_node] = 0 
+                copy_trail_levels[current_node][next_node] = 0
                 continue
 
             current_node = next_node
